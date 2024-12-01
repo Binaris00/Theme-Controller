@@ -1,8 +1,8 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "bin-theme-controller",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
-	"main": "main.js",
+	"description": "Set when and how the obsidian themes will be displayed.",
+	"main": "dist/main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
