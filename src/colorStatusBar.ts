@@ -1,13 +1,13 @@
 import { App, Plugin } from 'obsidian';
-import { IThControlSettings, DEFAULT_SETTINGS } from './settings';
+import { IThControlSettings, DEFAULT_SETTINGS } from './settings/settings';
 import ThControl from './main';
 
 export class ColorStatusBar {
     private app: App;
     private plugin: Plugin;
     private settings: IThControlSettings;
-    private DARK_MODE_THEME_KEY: string = "obsidian";
-    private LIGHT_MODE_THEME_KEY: string = "moonstone";
+    public DARK_MODE_THEME_KEY: string = "obsidian";
+    public LIGHT_MODE_THEME_KEY: string = "moonstone";
     currentColorStatus: string;
 
     constructor(plugin: ThControl) {

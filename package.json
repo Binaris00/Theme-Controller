@@ -1,6 +1,6 @@
 {
 	"name": "bin-theme-controller",
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"description": "Set when and how the obsidian themes will be displayed.",
 	"main": "dist/main.js",
 	"scripts": {
@@ -15,6 +15,7 @@
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",
+		"@popperjs/core": "^2.11.7",
 		"builtin-modules": "3.3.0",
 		"esbuild": "0.17.3",
 		"obsidian": "latest",

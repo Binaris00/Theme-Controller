@@ -1,0 +1,44 @@
+/*
+
+This CSS file will be included with your plugin, and
+available in the app when your plugin is enabled.
+
+If your plugin does not need CSS, delete this file.
+
+*/
+  /* Match list */
+.path-theme-list {
+  list-style: none;
+  padding: 0;
+  padding-bottom: 10px;
+}
+
+
+.path-theme-li-list {
+  min-height: 40px;
+  border-bottom: 0.5px solid var(--text-faint);
+}
+
+.path-theme-info {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 5px;
+  border-radius: 4px;
+  font-style: italic;
+  svg {
+      vertical-align: middle;
+  }
+}
+  
+.path-theme-info-left {
+  flex: 1; 
+  text-align: left;
+  padding: 0 10px;
+}
+
+.path-theme-info-center {
+  flex: 1; 
+  text-align: center;
+}
+
