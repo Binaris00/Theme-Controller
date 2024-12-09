@@ -19,6 +19,29 @@ export default class ThControl extends Plugin {
         this.colorStatusBar = new ColorStatusBar(this);
         this.pathController = new PathController(this);
         this.tagController = new TagController(this);
+
+        this.registerEvent(
+            this.app.workspace.on("file-open", async (file) => {
+                if (file === null) return;
+
+                if(!this.pathController.onFileOpen(file) && !this.tagController.onFileOpen(file)) 
+                    this.defaultThemeCheck();
+            })
+        );
+    }
+
+    defaultThemeCheck(){
+        if(this.settings.defaultTheme.replace(/\s/g, "") !== "" && this.settings.defaultEnabled){
+            //@ts-ignore
+            this.app.customCss.setTheme(this.settings.defaultTheme);
+            
+            //@ts-ignore
+            this.app.changeTheme(
+                this.settings.defaultColor
+                   ? this.colorStatusBar.DARK_MODE_THEME_KEY
+                    : this.colorStatusBar.LIGHT_MODE_THEME_KEY
+            );
+        }
     }
 
     onunload() {

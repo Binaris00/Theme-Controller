@@ -1,6 +1,7 @@
 import { PluginSettingTab, App, Setting, Notice, TFolder } from "obsidian";
 import ThControl from "../main";
-import { getTags, ThemeValues } from 'src/theme_utils';
+import { ThemeValues } from 'src/theme_utils';
+import { getTags } from "src/tagController";
 import { GenericTextSuggester } from "./suggesters/genericTextSuggester";
 import { PathThemeModal, TagThemeModal } from "src/components/modals";
 import { getThemes } from "src/theme_utils";
@@ -19,6 +20,10 @@ export interface IThControlSettings {
 	tagStrDummy: string;
 	tagThemeDummy: string;
 	tagColorDummy: boolean;
+
+	defaultTheme: string;
+	defaultColor: boolean;
+	defaultEnabled: boolean;
 }
 
 export const DEFAULT_SETTINGS: IThControlSettings = {
@@ -34,6 +39,10 @@ export const DEFAULT_SETTINGS: IThControlSettings = {
     tagStrDummy: '',
     tagThemeDummy: '',
     tagColorDummy: true,
+
+	defaultTheme: ' ',
+    defaultColor: true,
+	defaultEnabled: false,
 };
 
 export class ThControlSettingTab extends PluginSettingTab {
@@ -54,6 +63,7 @@ export class ThControlSettingTab extends PluginSettingTab {
 		this.renderPathThemeList(containerEl, this.plugin.settings)
 		this.tagControl(containerEl);
 		this.renderTagThemeList(containerEl, this.plugin.settings)
+		this.defaultTheme(containerEl);
 	}
 
 
@@ -324,5 +334,47 @@ export class ThControlSettingTab extends PluginSettingTab {
 		  })
 		})
 	}
-}
 
+	private defaultTheme(container: HTMLElement): void {
+
+		let setting = new Setting(container).setHeading().setName("Default Theme").setDesc("Set a default theme when you don't have any saved theme config in path or tag");
+		let themes: string[] = getThemes();
+
+		setting.addToggle((toggle) => {
+			toggle.setValue(this.plugin.settings.defaultEnabled);
+            toggle.onChange(async (value) => {
+				this.plugin.settings.defaultEnabled = value;
+                await this.plugin.saveSettings();
+				this.display();
+            })
+		})
+
+		setting.addDropdown((dropDown) => {
+			if(!this.plugin.settings.defaultEnabled) dropDown.setDisabled(true);
+
+			for(let theme of themes){
+				dropDown.addOption(theme, theme);
+			}
+
+			dropDown.setValue(this.plugin.settings.defaultTheme);
+
+			dropDown.onChange(async (value) => {
+				this.plugin.settings.defaultTheme = value;
+				await this.plugin.saveSettings();
+			})
+		})
+
+
+		setting.addDropdown((dropDown) => {
+			if(!this.plugin.settings.defaultEnabled) dropDown.setDisabled(true);
+
+			dropDown.addOption("Light", "Light")
+			dropDown.addOption("Dark", "Dark")
+			dropDown.setValue("Dark")
+			dropDown.onChange(async (value) => {
+				this.plugin.settings.defaultColor = value.toLowerCase() === "dark" ? true : false
+				await this.plugin.saveSettings();
+			})
+		})
+	}
+}

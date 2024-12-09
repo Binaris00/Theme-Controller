@@ -1,6 +1,6 @@
 {
 	"name": "bin-theme-controller",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "Set when and how the obsidian themes will be displayed.",
 	"main": "dist/main.js",
 	"scripts": {

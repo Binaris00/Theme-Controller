@@ -1,7 +1,7 @@
 {
 	"id": "bin-theme-controller",
 	"name": "Theme Controller",
-	"version": "0.0.2",
+	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Set when and how the obsidian themes will be displayed.",
 	"author": "Binaris",
