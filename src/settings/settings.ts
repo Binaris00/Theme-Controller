@@ -1,8 +1,9 @@
 import { PluginSettingTab, App, Setting, Notice, TFolder } from "obsidian";
 import ThControl from "../main";
-import { ThemeValues } from 'src/pathController';
+import { getTags, ThemeValues } from 'src/theme_utils';
 import { GenericTextSuggester } from "./suggesters/genericTextSuggester";
-import { PathThemeModal } from "src/components/modals";
+import { PathThemeModal, TagThemeModal } from "src/components/modals";
+import { getThemes } from "src/theme_utils";
 
 export interface IThControlSettings {
 	enableColorStatusBarIcon: boolean;
@@ -13,6 +14,11 @@ export interface IThControlSettings {
 	pathFolderDummy: string;
 	pathThemeDummy: string;
 	pathColorDummy: boolean;
+
+	tagThemesArr: Array<ThemeValues>
+	tagStrDummy: string;
+	tagThemeDummy: string;
+	tagColorDummy: boolean;
 }
 
 export const DEFAULT_SETTINGS: IThControlSettings = {
@@ -22,7 +28,12 @@ export const DEFAULT_SETTINGS: IThControlSettings = {
 	pathThemesArr: [new ThemeValues("ExampleFolder/InsideFolder/", "None", true)],
 	pathFolderDummy: '',
 	pathThemeDummy: '',
-	pathColorDummy: true
+	pathColorDummy: true,
+
+	tagThemesArr: [new ThemeValues("Example", "None", true)],
+    tagStrDummy: '',
+    tagThemeDummy: '',
+    tagColorDummy: true,
 };
 
 export class ThControlSettingTab extends PluginSettingTab {
@@ -40,7 +51,9 @@ export class ThControlSettingTab extends PluginSettingTab {
 
 		this.statusBarIcon(containerEl);
 		this.pathControl(containerEl);
-		this,this.renderPathThemeList(containerEl, this.plugin.settings)
+		this.renderPathThemeList(containerEl, this.plugin.settings)
+		this.tagControl(containerEl);
+		this.renderTagThemeList(containerEl, this.plugin.settings)
 	}
 
 
@@ -84,9 +97,9 @@ export class ThControlSettingTab extends PluginSettingTab {
 
 
 	pathControl(container: HTMLElement): void{
-		new Setting(container).setHeading().setName("Theme by Path")
+		new Setting(container).setHeading().setName("Theme by Path").setDesc("This option has lower priority than the Tag Controller");
 
-		let themes: string[] = this.plugin.pathController.getThemes();
+		let themes: string[] = getThemes();
 
 		let settingAdd = new Setting(container).setName('Add a new path').setDesc('set the path, theme and color scheme, after that, select the add button');
 		settingAdd.addText((text) => {
@@ -155,11 +168,11 @@ export class ThControlSettingTab extends PluginSettingTab {
 
 
 	private renderPathThemeList(element: HTMLElement, settings: IThControlSettings): void {
-		const list = element.createEl('ul', { cls: ('path-theme-list'), attr: { 'data-index': -1 } });
+		const list = element.createEl('ul', { cls: ('thcontrol-theme-list'), attr: { 'data-index': -1 } });
 
 		settings.pathThemesArr.forEach(value => {
 			const groupItem = list.createEl('li', {
-				cls: [('path-theme-li-list')]
+				cls: [('thcontrol-li-list')]
 			});
 
 			this.renderElementPathTheme(groupItem, value);
@@ -167,10 +180,10 @@ export class ThControlSettingTab extends PluginSettingTab {
 	  }
 
 	  private renderElementPathTheme(element: HTMLElement, value: ThemeValues){
-		const listInfo = element.createDiv({ cls: ('path-theme-info') });
-		listInfo.createSpan({ text: value.internalContent, cls: ('path-theme-info-left') });
+		const listInfo = element.createDiv({ cls: ('thcontrol-theme-info') });
+		listInfo.createSpan({ text: value.internalContent, cls: ('thcontrol-info-left') });
 
-		listInfo.createSpan({ text: value.theme, cls: ('path-theme-info-center') });
+		listInfo.createSpan({ text: value.theme, cls: ('thcontrol-info-center') });
 
 		listInfo.createSpan({ text: value.color === true ? "Dark" : "Light", cls: ('path-theme-info-center') });
 
@@ -198,6 +211,118 @@ export class ThControlSettingTab extends PluginSettingTab {
 			this.display();
 		  })
 		})
+	}
+
+	private tagControl(container: HTMLElement): void {
+		new Setting(container).setHeading().setName("Theme by Tag").setDesc("This option has more priority than the Path Controller")
+
+		let themes: string[] = getThemes();
+
+		let settingAdd = new Setting(container).setName('Add a new tag').setDesc('set the tag, theme and color scheme, after that, select the add button');
+		settingAdd.addText((text) => {
+			text.setPlaceholder('ExampleTag')
+			text.onChange(async (value) => {
+				this.plugin.settings.tagStrDummy = value;
+				await this.plugin.saveSettings();
+			})
+
+			new GenericTextSuggester(
+				this.app,
+				text.inputEl,
+				getTags(this.app),
+			);
+		})
+
+
+		settingAdd.addDropdown((dropDown) => {
+			for(let theme of themes){
+				dropDown.addOption(theme, theme);
+			}
+			dropDown.setValue(" ");
+
+			dropDown.onChange(async (value) => {
+				this.plugin.settings.tagThemeDummy = value;
+				await this.plugin.saveSettings();
+			})
+		})
+
+		settingAdd.addDropdown(dropDown => dropDown
+			.addOption("Light", "Light")
+			.addOption("Dark", "Dark")
+			.setValue("Dark")
+			.onChange(async (value) => {
+				this.plugin.settings.tagColorDummy = value.toLowerCase() === "dark" ? true : false
+				await this.plugin.saveSettings();
+			})
+		)
+
+		settingAdd.addButton(button => button
+			.setButtonText("Add")
+			.onClick(async () => {
+				if(this.plugin.settings.tagStrDummy.replace(/\s/g, "") !== "" 
+				&& this.plugin.settings.tagThemeDummy.replace(/\s/g, "") !== ""){
+					this.plugin.settings.tagThemesArr.push(new ThemeValues(
+						this.plugin.settings.tagStrDummy,
+						this.plugin.settings.tagThemeDummy,
+						this.plugin.settings.tagColorDummy
+					))
+					new Notice("Added successfully")
+
+					this.plugin.settings.tagStrDummy, this.plugin.settings.tagThemeDummy = ''
+					this.plugin.settings.tagColorDummy = true;
+					await this.plugin.saveSettings();
+					this.display();
+				} else {
+					new Notice("Please fill in all fields");
+				}
+			})
+		)
+	}
+
+	private renderTagThemeList(element: HTMLElement, settings: IThControlSettings): void {
+		const list = element.createEl('ul', { cls: ('thcontrol-theme-list'), attr: { 'data-index': -1 } });
+
+		settings.tagThemesArr.forEach(value => {
+			const groupItem = list.createEl('li', {
+				cls: [('thcontrol-li-list')]
+			});
+
+			this.renderElementTagTheme(groupItem, value);
+		})
 	  }
+
+	  private renderElementTagTheme(element: HTMLElement, value: ThemeValues){
+		const listInfo = element.createDiv({ cls: ('thcontrol-theme-info') });
+		listInfo.createSpan({ text: value.internalContent, cls: ('thcontrol-info-left') });
+
+		listInfo.createSpan({ text: value.theme, cls: ('thcontrol-info-center') });
+
+		listInfo.createSpan({ text: value.color === true ? "Dark" : "Light", cls: ('path-theme-info-center') });
+
+
+		const buttonsDiv = listInfo.createDiv();
+
+		let buttons = new Setting(buttonsDiv)
+		buttons.addButton((button) => {
+		  button.setIcon("settings")
+		  button.onClick(async () =>{
+			let modal = new TagThemeModal(this.app, this.plugin, value);
+			const newCallback = () => {
+				this.display();
+			}
+			modal.callback = newCallback;
+			modal.open();
+		  })
+		})
+
+		buttons.addButton((button) => {
+		  button.setIcon("trash-2")
+		  button.onClick(async () =>{
+			this.plugin.settings.tagThemesArr.remove(value);
+			await this.plugin.saveSettings();
+			this.display();
+		  })
+		})
+	}
 }
 
