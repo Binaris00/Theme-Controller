@@ -1,9 +1,8 @@
 import { App, Notice } from "obsidian";
 import ThControl from "./main";
 import { IThControlSettings } from "./settings/settings";
-import { isPathInside } from "./theme_utils";
 
-export class PathController {
+export class TagController {
     private app: App;
     private plugin: ThControl;
     private settings: IThControlSettings;
@@ -15,22 +14,37 @@ export class PathController {
         this.load();
     }
 
-    load() {
+    load(): void {
         this.plugin.registerEvent(
             this.app.workspace.on("file-open", async (file) => {
-                if (file?.path === undefined) return;
-
-                let bestMatch: { theme: string; color: boolean } | null = null;
-                let maxDepth = 0;
-
-                for (let value of this.settings.pathThemesArr) {
-                    const depth = isPathInside(value.internalContent, file.path);
-                    if (depth > maxDepth) {
-                        maxDepth = depth;
-                        bestMatch = value;
-                    }
+                if (file === null) return;
+                let frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
+    
+                if (frontmatter === undefined) {
+                    new Notice("No frontmatter")
+                    return;
                 }
-
+    
+                let tags = frontmatter.tags;
+    
+                let bestMatch: { theme: string; color: boolean } | null = null;
+    
+                
+                for (let tag of tags) {
+                    for (let config of this.settings.tagThemesArr) {
+                        new Notice("Revisando: " + tag + ": " + config.internalContent)
+                        if (tag === config.internalContent) {
+                            
+                            bestMatch = {
+                                theme: config.theme,
+                                color: config.color
+                            };
+                            break;
+                        }
+                    }
+                    if (bestMatch) break;
+                }
+    
                 if (bestMatch) {
                     //@ts-ignore
                     this.app.customCss.setTheme(bestMatch.theme);
@@ -41,9 +55,9 @@ export class PathController {
                             : this.plugin.colorStatusBar.LIGHT_MODE_THEME_KEY
                     );
                 } else {
-                    //new Notice("No matching theme found for: " + file.path);
+                    
                 }
             })
         );
-    }
+    }    
 }

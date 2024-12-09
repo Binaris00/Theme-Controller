@@ -7,19 +7,19 @@ If your plugin does not need CSS, delete this file.
 
 */
   /* Match list */
-.path-theme-list {
+.thcontrol-theme-list {
   list-style: none;
   padding: 0;
   padding-bottom: 10px;
 }
 
 
-.path-theme-li-list {
+.thcontrol-li-list {
   min-height: 40px;
   border-bottom: 0.5px solid var(--text-faint);
 }
 
-.path-theme-info {
+.thcontrol-theme-info {
   display: flex;
   justify-content: space-between; 
   align-items: center;
@@ -31,13 +31,13 @@ If your plugin does not need CSS, delete this file.
   }
 }
   
-.path-theme-info-left {
+.thcontrol-info-left {
   flex: 1; 
   text-align: left;
   padding: 0 10px;
 }
 
-.path-theme-info-center {
+.thcontrol-info-center {
   flex: 1; 
   text-align: center;
 }
