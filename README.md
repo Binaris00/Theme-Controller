@@ -1,6 +1,6 @@
 # Theme Controller
 
-Set when and how the obsidian themes will be displayed.
+Set when and how the themes will be displayed.
 
 ## Features
 
@@ -24,7 +24,7 @@ Set when and how the obsidian themes will be displayed.
 
 ## Support - Feedback
 
-Email `binaris000@gmail.com` or tag me in the Obsidian Discord by `@Binaris`.
+Email `binaris000@gmail.com` or tag me on Discord by `@Binaris`.
 
 ## License
 
