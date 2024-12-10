@@ -32,8 +32,8 @@ export class PathController {
             //@ts-ignore
             this.app.changeTheme(
                 bestMatch.color
-                    ? this.plugin.colorStatusBar.DARK_MODE_THEME_KEY
-                    : this.plugin.colorStatusBar.LIGHT_MODE_THEME_KEY
+                    ? "obsidian"
+                    : "moonstone"
             );
             return true;
         }

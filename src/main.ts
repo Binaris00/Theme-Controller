@@ -23,11 +23,15 @@ export default class ThControl extends Plugin {
         this.registerEvent(
             this.app.workspace.on("file-open", async (file) => {
                 if (file === null) return;
+                
+                let path = this.pathController.onFileOpen(file);
+                let tag = this.tagController.onFileOpen(file);
 
-                if(!this.pathController.onFileOpen(file) && !this.tagController.onFileOpen(file)) 
+                if(!path && !tag) 
                     this.defaultThemeCheck();
             })
         );
+        
     }
 
     defaultThemeCheck(){
@@ -38,8 +42,8 @@ export default class ThControl extends Plugin {
             //@ts-ignore
             this.app.changeTheme(
                 this.settings.defaultColor
-                   ? this.colorStatusBar.DARK_MODE_THEME_KEY
-                    : this.colorStatusBar.LIGHT_MODE_THEME_KEY
+                   ? "obsidian"
+                    : "moonstone"
             );
         }
     }

@@ -6,8 +6,8 @@ export class ColorStatusBar {
     private app: App;
     private plugin: Plugin;
     private settings: IThControlSettings;
-    public DARK_MODE_THEME_KEY: string = "obsidian";
-    public LIGHT_MODE_THEME_KEY: string = "moonstone";
+    public DARK_MODE_THEME_KEY = "obsidian";
+    public LIGHT_MODE_THEME_KEY = "moonstone";
     currentColorStatus: string;
 
     constructor(plugin: ThControl) {

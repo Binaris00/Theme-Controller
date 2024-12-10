@@ -69,45 +69,49 @@ export class ThControlSettingTab extends PluginSettingTab {
 
 	statusBarIcon(container: HTMLElement): void{
 		new Setting(container)
-			.setName('Enable Color Status Bar Icon')
+			.setName('Enable color switcher')
 			.setDesc('Enable/Disable an icon in your status bar to switch light/dark mode! Need to reload Obsidian or the plugin' )
             .addToggle((toggle) => {
                 toggle.setValue(this.plugin.settings.enableColorStatusBarIcon)
                 toggle.onChange(async (value) => {
 					this.plugin.settings.enableColorStatusBarIcon = value;
 					await this.plugin.saveSettings();
+					this.display();
                 })
 			}
 		)
 			
 		new Setting(container)
-			.setName('Dark Mode String Status')
+			.setName('Dark mode string status')
 			.setDesc('Set any text-emoji to display the dark status! Need to enable Color Status Bar Icon')
-			.addText(text => text
-				.setPlaceholder('🌕')
-				.setValue(this.plugin.settings.darkModeStringStatus)
-				.onChange(async (value) => {
+			.addText((text) => {
+				if(!this.plugin.settings.enableColorStatusBarIcon) text.setDisabled(true);
+				text.setPlaceholder('🌕')
+				text.setValue(this.plugin.settings.darkModeStringStatus)
+				text.onChange(async (value) => {
 					this.plugin.settings.darkModeStringStatus = value;
 					await this.plugin.saveSettings();
-				}));
+				})
+			});
 		
 
 		new Setting(container)
-			.setName('Light Mode String Status')
+			.setName('Light mode string status')
 			.setDesc('Set any text-emoji to display the light status! Need to enable Color Status Bar Icon')
-			.addText(text => text
-				.setPlaceholder('🔆')
-				.setValue(this.plugin.settings.lightModeStringStatus)
+			.addText((text) => {
+				if(!this.plugin.settings.enableColorStatusBarIcon) text.setDisabled(true);
+				text.setPlaceholder('🔆')
+				text.setValue(this.plugin.settings.lightModeStringStatus)
 				.onChange(async (value) => {
-					this.plugin.settings.lightModeStringStatus = value;
-					await this.plugin.saveSettings();
-				})
-			);
+                    this.plugin.settings.lightModeStringStatus = value;
+                    await this.plugin.saveSettings();
+                })
+			});
 	}
 
 
 	pathControl(container: HTMLElement): void{
-		new Setting(container).setHeading().setName("Theme by Path").setDesc("This option has lower priority than the Tag Controller");
+		new Setting(container).setHeading().setName("Path-Specific themes").setDesc("This option has lower priority than the Tag Controller");
 
 		let themes: string[] = getThemes();
 
@@ -224,11 +228,11 @@ export class ThControlSettingTab extends PluginSettingTab {
 	}
 
 	private tagControl(container: HTMLElement): void {
-		new Setting(container).setHeading().setName("Theme by Tag").setDesc("This option has more priority than the Path Controller")
+		new Setting(container).setHeading().setName("Tag-Specific themes").setDesc("This option has more priority than the Path Controller")
 
 		let themes: string[] = getThemes();
 
-		let settingAdd = new Setting(container).setName('Add a new tag').setDesc('set the tag, theme and color scheme, after that, select the add button');
+		let settingAdd = new Setting(container).setName('Add a new tag').setDesc('set the tag, theme and color scheme, after that, select the add button. No need to write `#` before the tag');
 		settingAdd.addText((text) => {
 			text.setPlaceholder('ExampleTag')
 			text.onChange(async (value) => {
@@ -337,7 +341,7 @@ export class ThControlSettingTab extends PluginSettingTab {
 
 	private defaultTheme(container: HTMLElement): void {
 
-		let setting = new Setting(container).setHeading().setName("Default Theme").setDesc("Set a default theme when you don't have any saved theme config in path or tag");
+		let setting = new Setting(container).setHeading().setName("Default theme").setDesc("Set a default theme when you don't have any saved theme config in path or tag");
 		let themes: string[] = getThemes();
 
 		setting.addToggle((toggle) => {
