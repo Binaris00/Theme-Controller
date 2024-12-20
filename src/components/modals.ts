@@ -1,8 +1,9 @@
 import { App, Modal, Notice, Setting, TFolder } from "obsidian";
 import ThControl from '../main';
-import { GenericTextSuggester } from "src/settings/suggesters/genericTextSuggester";
 import { ThemeValues } from 'src/theme_utils';
 import { getThemes } from "src/theme_utils";
+import { FolderSuggester } from "src/settings/suggesters/FolderSuggester";
+import { TagSuggester } from "src/settings/suggesters/tagSuggester";
 
 export class PathThemeModal extends Modal {
     private plugin: ThControl
@@ -46,14 +47,7 @@ export class PathThemeModal extends Modal {
                 await this.plugin.saveSettings();
             })
 
-            new GenericTextSuggester(
-				this.app,
-				text.inputEl,
-				this.app.vault
-					.getAllLoadedFiles()
-					.filter((f) => f instanceof TFolder && f.path !== "/")
-					.map((f) => f.path)
-			);
+            new FolderSuggester(this.app, text.inputEl);
         })
 
         const theme = new Setting(contentEl).setName("Theme");
@@ -167,14 +161,7 @@ export class TagThemeModal extends Modal {
                 await this.plugin.saveSettings();
             })
 
-            new GenericTextSuggester(
-				this.app,
-				text.inputEl,
-				this.app.vault
-					.getAllLoadedFiles()
-					.filter((f) => f instanceof TFolder && f.path !== "/")
-					.map((f) => f.path)
-			);
+            new TagSuggester(this.app, text.inputEl);
         })
 
         const theme = new Setting(contentEl).setName("Theme");

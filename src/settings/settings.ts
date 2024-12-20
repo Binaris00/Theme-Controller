@@ -2,9 +2,10 @@ import { PluginSettingTab, App, Setting, Notice, TFolder } from "obsidian";
 import ThControl from "../main";
 import { ThemeValues } from 'src/theme_utils';
 import { getTags } from "src/tagController";
-import { GenericTextSuggester } from "./suggesters/genericTextSuggester";
 import { PathThemeModal, TagThemeModal } from "src/components/modals";
 import { getThemes } from "src/theme_utils";
+import { FolderSuggester } from "./suggesters/FolderSuggester";
+import { TagSuggester } from "./suggesters/tagSuggester";
 
 export interface IThControlSettings {
 	enableColorStatusBarIcon: boolean;
@@ -111,7 +112,7 @@ export class ThControlSettingTab extends PluginSettingTab {
 
 
 	pathControl(container: HTMLElement): void{
-		new Setting(container).setHeading().setName("Path-Specific themes").setDesc("This option has lower priority than the Tag Controller");
+		new Setting(container).setHeading().setName("Path-Specific themes").setDesc("This option has lower priority than the tag controller");
 
 		let themes: string[] = getThemes();
 
@@ -123,14 +124,7 @@ export class ThControlSettingTab extends PluginSettingTab {
 				await this.plugin.saveSettings();
 			})
 
-			new GenericTextSuggester(
-				this.app,
-				text.inputEl,
-				this.app.vault
-					.getAllLoadedFiles()
-					.filter((f) => f instanceof TFolder && f.path !== "/")
-					.map((f) => f.path)
-			);
+			new FolderSuggester(this.app, text.inputEl);
 		})
 
 
@@ -228,7 +222,7 @@ export class ThControlSettingTab extends PluginSettingTab {
 	}
 
 	private tagControl(container: HTMLElement): void {
-		new Setting(container).setHeading().setName("Tag-Specific themes").setDesc("This option has more priority than the Path Controller")
+		new Setting(container).setHeading().setName("Tag-Specific themes").setDesc("This option has more priority than the path controller")
 
 		let themes: string[] = getThemes();
 
@@ -240,11 +234,7 @@ export class ThControlSettingTab extends PluginSettingTab {
 				await this.plugin.saveSettings();
 			})
 
-			new GenericTextSuggester(
-				this.app,
-				text.inputEl,
-				getTags(this.app),
-			);
+			new TagSuggester(this.app, text.inputEl);
 		})
 
 

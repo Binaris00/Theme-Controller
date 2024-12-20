@@ -73,7 +73,6 @@ export function getTags(app: App): string[] {
         if (cache) {
             currentCache = cache;
         }
-        const relativePath: string = tfile.path;
         
         const currentTags: string[] = getUniqueTags(currentCache);
         if (currentTags.length !== 0) {
