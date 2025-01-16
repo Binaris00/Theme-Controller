@@ -1,7 +1,7 @@
-import { App, Notice, TFile } from "obsidian";
+import { App, TFile } from "obsidian";
 import ThControl from "./main";
 import { IThControlSettings } from "./settings/settings";
-import * as path from "path";
+import * as path from 'path-browserify';
 
 export class PathController {
     private app: App;

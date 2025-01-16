@@ -4,7 +4,7 @@ import { ThemeValues } from 'src/theme_utils';
 import { getTags } from "src/tagController";
 import { PathThemeModal, TagThemeModal } from "src/components/modals";
 import { getThemes } from "src/theme_utils";
-import { FolderSuggester } from "./suggesters/FolderSuggester";
+import { FolderSuggester } from "./suggesters/folderSuggester";
 import { TagSuggester } from "./suggesters/tagSuggester";
 
 export interface IThControlSettings {

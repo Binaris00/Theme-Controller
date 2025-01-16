@@ -1,8 +1,8 @@
-import { App, Modal, Notice, Setting, TFolder } from "obsidian";
+import { App, Modal, Notice, Setting } from "obsidian";
 import ThControl from '../main';
 import { ThemeValues } from 'src/theme_utils';
 import { getThemes } from "src/theme_utils";
-import { FolderSuggester } from "src/settings/suggesters/FolderSuggester";
+import { FolderSuggester } from "src/settings/suggesters/folderSuggester";
 import { TagSuggester } from "src/settings/suggesters/tagSuggester";
 
 export class PathThemeModal extends Modal {

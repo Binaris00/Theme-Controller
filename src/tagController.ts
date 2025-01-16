@@ -1,4 +1,4 @@
-import { App, CachedMetadata, getAllTags, Notice, TFile } from "obsidian";
+import { App, CachedMetadata, getAllTags, TFile } from "obsidian";
 import ThControl from "./main";
 import { IThControlSettings } from "./settings/settings";
 
@@ -17,11 +17,11 @@ export class TagController {
     onFileOpen(file: TFile): boolean{
         let frontmatter = this.app.metadataCache.getFileCache(file)?.frontmatter;
     
-        if (frontmatter === undefined) {
-            return false;
-        }
+        if (frontmatter === undefined) return false;
 
         let tags = frontmatter.tags;
+        if(tags === undefined) return false;
+
         let bestMatch: { theme: string; color: boolean } | null = null;
     
         for (let tag of tags) {

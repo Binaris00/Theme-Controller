@@ -1,4 +1,4 @@
-import { AbstractInputSuggest, App, CachedMetadata, TAbstractFile, TFolder } from "obsidian";
+import { AbstractInputSuggest, App } from "obsidian";
 import { getUniqueTags } from "src/tagController";
 
 
