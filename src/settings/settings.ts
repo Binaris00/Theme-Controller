@@ -364,7 +364,7 @@ export class ThControlSettingTab extends PluginSettingTab {
 
 			dropDown.addOption("Light", "Light")
 			dropDown.addOption("Dark", "Dark")
-			dropDown.setValue("Dark")
+			dropDown.setValue(this.plugin.settings.defaultColor === true ? "Dark" : "Light")
 			dropDown.onChange(async (value) => {
 				this.plugin.settings.defaultColor = value.toLowerCase() === "dark" ? true : false
 				await this.plugin.saveSettings();
