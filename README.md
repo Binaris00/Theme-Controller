@@ -26,6 +26,8 @@ Set when and how the themes will be displayed.
 
 Email `binaris000@gmail.com` or tag me on Discord by `@Binaris`.
 
+Check my [Discord server](https://discord.gg/QUzEVGkNQK)!
+
 ## License
 
 MIT License
