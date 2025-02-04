@@ -1,4 +1,4 @@
-import { App, TFile } from "obsidian";
+import { App, TFile, Plugin } from 'obsidian';
 import ThControl from "./main";
 import { IThControlSettings } from "./settings/settings";
 import * as path from 'path-browserify';
@@ -44,9 +44,14 @@ export class PathController {
 
 
 export function isPathInside(basePath: string, targetPath: string): number {
-    const normalizedBase = path.resolve(basePath);
-    const normalizedTarget = path.resolve(targetPath);
+    let normalizedBase = basePath
+    let normalizedTarget = targetPath
 
+    if(!app.isMobile){
+        normalizedBase = path.resolve(basePath);
+        normalizedTarget = path.resolve(targetPath);    
+    }
+    
     if (normalizedTarget.startsWith(normalizedBase + path.sep)) {
         const baseParts = normalizedBase.split(path.sep);
         const targetParts = normalizedTarget.split(path.sep);
